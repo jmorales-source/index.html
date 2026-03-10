@@ -19,8 +19,8 @@ width:816px;
 min-height:1056px;
 background:white;
 margin:auto;
-padding:30px;
-box-shadow:0 0 10px rgba(0,0,0,0.15);
+padding:25px;
+box-sizing:border-box;
 }
 
 .logo{
@@ -61,7 +61,7 @@ font-size:14px;
 
 .grid{
 display:grid;
-grid-template-columns:repeat(16,1fr);
+grid-template-columns:repeat(31,1fr);
 }
 
 .cell{
@@ -98,7 +98,8 @@ margin:6px 0;
 }
 
 .teeth img{
-width:720px;
+width:100%;
+transform:scaleX(1.08);
 }
 
 .instructions{
@@ -160,8 +161,6 @@ INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 
 <h4>DIAGRAMA DE IPR, ATACHES Y ADITAMENTOS</h4>
 
-<div class="grid" id="numsTop"></div>
-
 <div class="grid" id="iprTop"></div>
 
 <div class="grid" id="simTop"></div>
@@ -173,8 +172,6 @@ INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 <div class="grid" id="simBottom"></div>
 
 <div class="grid" id="iprBottom"></div>
-
-<div class="grid" id="numsBottom"></div>
 
 <div class="instructions">
 
@@ -212,39 +209,16 @@ Total alineadores inferiores:
 
 <script>
 
-let numsTop=[
-"1.8","1.7","1.6","1.5","1.4","1.3","1.2","1.1",
-"2.1","2.2","2.3","2.4","2.5","2.6","2.7","2.8"
-]
-
-let numsBottom=[
-"4.8","4.7","4.6","4.5","4.4","4.3","4.2","4.1",
-"3.1","3.2","3.3","3.4","3.5","3.6","3.7","3.8"
-]
-
-function fillNumbers(id,data){
-
-let div=document.getElementById(id)
-
-data.forEach(n=>{
-
-let c=document.createElement("div")
-c.className="cell"
-c.innerText=n
-
-div.appendChild(c)
-
-})
-
-}
-
 function createIPR(id){
 
 let div=document.getElementById(id)
 
-for(let i=0;i<16;i++){
+for(let i=0;i<31;i++){
 
 let c=document.createElement("div")
+
+if(i%2===1){
+
 c.className="cell ipr"
 
 let s=document.createElement("select")
@@ -252,14 +226,19 @@ let s=document.createElement("select")
 let vals=["","⬜"]
 
 vals.forEach(v=>{
-
 let o=document.createElement("option")
 o.text=v
 s.add(o)
-
 })
 
 c.appendChild(s)
+
+}else{
+
+c.style.border="none"
+
+}
+
 div.appendChild(c)
 
 }
@@ -270,9 +249,11 @@ function createSymbols(id){
 
 let div=document.getElementById(id)
 
-for(let i=0;i<16;i++){
+for(let i=0;i<31;i++){
 
 let c=document.createElement("div")
+
+if(i%2===0){
 
 c.className="cell symbol"
 
@@ -292,14 +273,17 @@ c.innerText=map[op]||""
 
 }
 
+}else{
+
+c.style.border="none"
+
+}
+
 div.appendChild(c)
 
 }
 
 }
-
-fillNumbers("numsTop",numsTop)
-fillNumbers("numsBottom",numsBottom)
 
 createIPR("iprTop")
 createIPR("iprBottom")
@@ -311,35 +295,34 @@ async function exportPDF(){
 
 let paciente=document.getElementById("paciente").value || "PACIENTE"
 
-let nombre="INVEASYBLE - INSTRUCCIONES DEL PLAN DE TRATAMIENTO - "+paciente+".pdf"
+let nombre="INVEASYBLE - INSTRUCCIONES DEL PLAN - "+paciente+".pdf"
 
 const element=document.getElementById("page")
 
-const pdf=await html2pdf().set({
-
+const opt={
 margin:0,
+filename:nombre,
 image:{type:"jpeg",quality:1},
-html2canvas:{scale:3,useCORS:true},
-jsPDF:{unit:"pt",format:"letter",orientation:"portrait"}
+html2canvas:{scale:2,useCORS:true},
+jsPDF:{unit:"pt",format:"letter",orientation:"portrait"},
+pagebreak:{mode:["avoid-all"]}
+}
 
-}).from(element).outputPdf("datauristring")
+const worker=html2pdf().set(opt).from(element)
+
+const pdf=await worker.outputPdf("datauristring")
 
 const base64=pdf.split(",")[1]
 
 await fetch("https://script.google.com/macros/s/AKfycbzJjwMuJFyAEkFGqSHBtbOFtmCMI0pSxRE-ISRLroDEoB4VRhiaEC0Nr9d66eTDtsF9/exec",{
-
 method:"POST",
-
 body:JSON.stringify({
-
 name:nombre,
 file:base64
-
+})
 })
 
-})
-
-alert("PDF guardado en Google Drive")
+alert("PDF guardado en Drive")
 
 }
 
