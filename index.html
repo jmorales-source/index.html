@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,10 +17,12 @@ background:#ececec;
 
 #page{
 width:816px;
+height:1056px;
 background:white;
 margin:auto;
 padding:25px;
 box-sizing:border-box;
+overflow:hidden;
 }
 
 .logo{
@@ -88,26 +91,12 @@ border:none;
 background:#b87492;
 color:white;
 text-align:center;
-font-size:14px;
+font-size:16px;
 }
 
-.ipr-shift{
-display:grid;
-grid-template-columns:repeat(17,1fr);
-}
-
-.ipr-shift .cell{
-border:1px solid #999;
-padding:0;
-}
-
-.ipr-shift select{
-width:100%;
-height:100%;
-border:none;
-background:transparent;
-text-align:center;
-appearance:none;
+.symbol{
+cursor:pointer;
+font-size:18px;
 }
 
 .teeth{
@@ -144,6 +133,27 @@ cursor:pointer;
 
 .buttons{
 text-align:center;
+}
+
+.ipr-shift{
+display:grid;
+grid-template-columns:repeat(17,1fr);
+}
+
+.ipr-shift .cell{
+border:1px solid #999;
+padding:0;
+}
+
+.ipr-shift select{
+width:100%;
+height:100%;
+border:none;
+background:transparent;
+text-align:center;
+appearance:none;
+margin:0;
+padding:0;
 }
 
 </style>
@@ -220,10 +230,10 @@ Alineadores inf:
 <b>SIMBOLOGÍA:</b><br>
 
 ⬜ Atache<br>
-⭕ Botón elástico<br>
+⭕ Botón para elástico<br>
 🔁 Gancho plástico<br>
-🔶 Plano mordida<br>
-🔘 Punto presión
+🔶 Plano de mordida<br>
+🔘 Punto de presión
 
 </div>
 
@@ -231,7 +241,7 @@ Alineadores inf:
 
 <div class="buttons">
 <button onclick="exportPDF()">Exportar PDF</button>
-<button onclick="limpiar()">Limpiar</button>
+<button onclick="limpiar()">Limpiar formulario</button>
 </div>
 
 <script>
@@ -251,10 +261,13 @@ function fillNumbers(id,data){
 let div=document.getElementById(id)
 
 data.forEach(n=>{
+
 let c=document.createElement("div")
 c.className="cell"
 c.innerText=n
+
 div.appendChild(c)
+
 })
 
 }
@@ -266,18 +279,18 @@ let div=document.getElementById(id)
 for(let i=0;i<16;i++){
 
 let c=document.createElement("div")
-c.className="cell whitecell"
+c.className="cell whitecell symbol"
 
 c.onclick=()=>{
 
 let op=prompt("1 ⬜\n2 ⭕\n3 🔁\n4 🔶\n5 🔘\n0 borrar")
 
 let map={
-1:"⬜",
-2:"⭕",
-3:"🔁",
-4:"🔶",
-5:"🔘"
+1 Atache :"⬜",
+2 Botón elástico:"⭕",
+3 Gancho plástico:"🔁",
+4 Plano mordida:"🔶",
+5 Punto presión:"🔘"
 }
 
 c.innerText=map[op]||""
@@ -359,7 +372,7 @@ createIPR("iprBottom")
 createWhiteRow("whiteTop")
 createWhiteRow("whiteBottom")
 
-async function exportPDF(){
+function exportPDF(){
 
 let paciente=document.getElementById("paciente").value || "PACIENTE"
 
@@ -371,26 +384,11 @@ const opt={
 margin:0,
 filename:nombre,
 image:{type:"jpeg",quality:1},
-html2canvas:{scale:3,useCORS:true},
+html2canvas:{scale:3,useCORS:true,scrollY:0},
 jsPDF:{unit:"pt",format:"letter",orientation:"portrait"}
 }
 
-const worker=html2pdf().set(opt).from(element)
-
-const pdf=await worker.outputPdf("datauristring")
-
-const base64=pdf.split(",")[1]
-
-await fetch("https://script.google.com/macros/s/AKfycbwU0JCrpJBf1jthmnLhLtRWjJFyn2_hruLmLh_F4kFAMoT8PTKqZH9Q6EpmylHXgCAO/exec",{
-method:"POST",
-body:JSON.stringify({
-name:nombre,
-file:base64,
-patient:paciente
-})
-})
-
-alert("PDF enviado a Drive")
+html2pdf().set(opt).from(element).save()
 
 }
 
@@ -403,7 +401,7 @@ document.getElementById("sup").value=""
 document.getElementById("inf").value=""
 
 document.querySelectorAll("select").forEach(s=>s.value="")
-document.querySelectorAll(".whitecell").forEach(s=>s.innerText="")
+document.querySelectorAll(".symbol").forEach(s=>s.innerText="")
 
 }
 
@@ -411,3 +409,4 @@ document.querySelectorAll(".whitecell").forEach(s=>s.innerText="")
 
 </body>
 </html>
+```
