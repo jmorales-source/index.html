@@ -16,11 +16,12 @@ background:#ececec;
 
 #page{
 width:816px;
-min-height:1056px;
+height:1056px;
 background:white;
 margin:auto;
 padding:25px;
 box-sizing:border-box;
+overflow:hidden;
 }
 
 .logo{
@@ -61,16 +62,17 @@ font-size:14px;
 
 .grid{
 display:grid;
-grid-template-columns:repeat(31,1fr);
+grid-template-columns:repeat(16,1fr);
+gap:0;
 }
 
 .cell{
 border:1px solid #999;
-height:32px;
+height:30px;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:14px;
+font-size:13px;
 }
 
 .ipr{
@@ -94,16 +96,16 @@ font-size:18px;
 
 .teeth{
 text-align:center;
-margin:6px 0;
+margin:4px 0;
 }
 
 .teeth img{
 width:100%;
-transform:scaleX(1.08);
+transform:scaleX(1.03);
 }
 
 .instructions{
-margin-top:20px;
+margin-top:15px;
 font-size:14px;
 }
 
@@ -114,12 +116,11 @@ width:90px;
 }
 
 .symbology{
-margin-top:15px;
+margin-top:10px;
 font-size:13px;
 }
 
 button{
-display:inline-block;
 margin:25px 10px;
 padding:10px 25px;
 cursor:pointer;
@@ -161,17 +162,17 @@ INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 
 <h4>DIAGRAMA DE IPR, ATACHES Y ADITAMENTOS</h4>
 
-<div class="grid" id="iprTop"></div>
-
+<div class="grid" id="numsTop"></div>
 <div class="grid" id="simTop"></div>
+<div class="grid" id="iprTop"></div>
 
 <div class="teeth">
 <img src="https://raw.githubusercontent.com/jmorales-source/index.html/main/DENTOGRAMA.png">
 </div>
 
-<div class="grid" id="simBottom"></div>
-
 <div class="grid" id="iprBottom"></div>
+<div class="grid" id="simBottom"></div>
+<div class="grid" id="numsBottom"></div>
 
 <div class="instructions">
 
@@ -209,16 +210,39 @@ Total alineadores inferiores:
 
 <script>
 
+let numsTop=[
+"18","17","16","15","14","13","12","11",
+"21","22","23","24","25","26","27","28"
+]
+
+let numsBottom=[
+"48","47","46","45","44","43","42","41",
+"31","32","33","34","35","36","37","38"
+]
+
+function fillNumbers(id,data){
+
+let div=document.getElementById(id)
+
+data.forEach(n=>{
+
+let c=document.createElement("div")
+c.className="cell"
+c.innerText=n
+
+div.appendChild(c)
+
+})
+
+}
+
 function createIPR(id){
 
 let div=document.getElementById(id)
 
-for(let i=0;i<31;i++){
+for(let i=0;i<16;i++){
 
 let c=document.createElement("div")
-
-if(i%2===1){
-
 c.className="cell ipr"
 
 let s=document.createElement("select")
@@ -232,13 +256,6 @@ s.add(o)
 })
 
 c.appendChild(s)
-
-}else{
-
-c.style.border="none"
-
-}
-
 div.appendChild(c)
 
 }
@@ -249,12 +266,9 @@ function createSymbols(id){
 
 let div=document.getElementById(id)
 
-for(let i=0;i<31;i++){
+for(let i=0;i<16;i++){
 
 let c=document.createElement("div")
-
-if(i%2===0){
-
 c.className="cell symbol"
 
 c.onclick=()=>{
@@ -273,17 +287,14 @@ c.innerText=map[op]||""
 
 }
 
-}else{
-
-c.style.border="none"
-
-}
-
 div.appendChild(c)
 
 }
 
 }
+
+fillNumbers("numsTop",numsTop)
+fillNumbers("numsBottom",numsBottom)
 
 createIPR("iprTop")
 createIPR("iprBottom")
@@ -295,7 +306,7 @@ async function exportPDF(){
 
 let paciente=document.getElementById("paciente").value || "PACIENTE"
 
-let nombre="INVEASYBLE - INSTRUCCIONES DEL PLAN - "+paciente+".pdf"
+let nombre="INVEASYBLE - PLAN - "+paciente+".pdf"
 
 const element=document.getElementById("page")
 
@@ -304,8 +315,7 @@ margin:0,
 filename:nombre,
 image:{type:"jpeg",quality:1},
 html2canvas:{scale:2,useCORS:true},
-jsPDF:{unit:"pt",format:"letter",orientation:"portrait"},
-pagebreak:{mode:["avoid-all"]}
+jsPDF:{unit:"pt",format:"letter",orientation:"portrait"}
 }
 
 const worker=html2pdf().set(opt).from(element)
@@ -321,8 +331,6 @@ name:nombre,
 file:base64
 })
 })
-
-alert("PDF guardado en Drive")
 
 }
 
