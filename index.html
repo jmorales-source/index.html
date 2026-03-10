@@ -16,6 +16,7 @@ background:#ececec;
 
 #page{
 width:816px;
+height:auto;
 background:white;
 margin:auto;
 padding:25px;
@@ -74,6 +75,7 @@ font-size:13px;
 
 .whitecell{
 background:white;
+cursor:pointer;
 }
 
 .ipr{
@@ -131,22 +133,9 @@ cursor:pointer;
 text-align:center;
 }
 
-/* IPR desplazado */
-
 .ipr-shift{
 display:grid;
 grid-template-columns:repeat(17,1fr);
-}
-
-.ipr-shift .cell{
-border:1px solid #999;
-}
-
-.ipr-shift select{
-width:100%;
-height:100%;
-border:none;
-text-align:center;
 }
 
 </style>
@@ -256,13 +245,10 @@ function fillNumbers(id,data){
 let div=document.getElementById(id)
 
 data.forEach(n=>{
-
 let c=document.createElement("div")
 c.className="cell"
 c.innerText=n
-
 div.appendChild(c)
-
 })
 
 }
@@ -275,6 +261,23 @@ for(let i=0;i<16;i++){
 
 let c=document.createElement("div")
 c.className="cell whitecell"
+
+c.onclick=()=>{
+
+let op=prompt("1 ⬜\n2 ⭕\n3 🔁\n4 🔶\n5 🔘\n0 borrar")
+
+let map={
+1:"⬜",
+2:"⭕",
+3:"🔁",
+4:"🔶",
+5:"🔘"
+}
+
+c.innerText=map[op]||""
+
+}
+
 div.appendChild(c)
 
 }
@@ -379,6 +382,7 @@ document.getElementById("sup").value=""
 document.getElementById("inf").value=""
 
 document.querySelectorAll("select").forEach(s=>s.value="")
+document.querySelectorAll(".whitecell").forEach(s=>s.innerText="")
 
 }
 
