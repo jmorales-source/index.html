@@ -16,7 +16,7 @@ background:#ececec;
 
 #page{
 width:816px;
-min-height:1056px;
+height:1056px;
 background:white;
 margin:auto;
 padding:30px;
@@ -70,7 +70,7 @@ height:32px;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:12px;
+font-size:14px;
 }
 
 .ipr{
@@ -84,6 +84,7 @@ border:none;
 background:#b87492;
 color:white;
 text-align:center;
+font-size:16px;
 }
 
 .symbol{
@@ -117,10 +118,14 @@ font-size:13px;
 }
 
 button{
-display:block;
-margin:25px auto;
+display:inline-block;
+margin:25px 10px;
 padding:10px 25px;
 cursor:pointer;
+}
+
+.buttons{
+text-align:center;
 }
 
 </style>
@@ -132,7 +137,7 @@ cursor:pointer;
 <div id="page">
 
 <div class="logo">
-<img src="https://github.com/jmorales-source/inveasyble-website-assets/blob/main/INVEASYBLE%20(1).png?raw=true">
+<img crossorigin="anonymous" src="https://github.com/jmorales-source/inveasyble-website-assets/blob/main/INVEASYBLE%20(1).png?raw=true">
 </div>
 
 <div class="header-title">
@@ -162,7 +167,7 @@ INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 <div class="grid" id="simTop"></div>
 
 <div class="teeth">
-<img src="https://github.com/jmorales-source/index.html/blob/main/DENTOGRAMA.png?raw=true">
+<img crossorigin="anonymous" src="https://github.com/jmorales-source/index.html/blob/main/DENTOGRAMA.png?raw=true">
 </div>
 
 <div class="grid" id="simBottom"></div>
@@ -200,7 +205,10 @@ Total alineadores inferiores:
 
 </div>
 
+<div class="buttons">
 <button onclick="exportPDF()">Exportar PDF</button>
+<button onclick="limpiar()">Limpiar formulario</button>
+</div>
 
 <script>
 
@@ -241,7 +249,7 @@ c.className="cell ipr"
 
 let s=document.createElement("select")
 
-let vals=["","0.1","0.2","0.3","0.4","0.5"]
+let vals=["","⬜"]
 
 vals.forEach(v=>{
 
@@ -265,6 +273,7 @@ let div=document.getElementById(id)
 for(let i=0;i<16;i++){
 
 let c=document.createElement("div")
+
 c.className="cell symbol"
 
 c.onclick=()=>{
@@ -310,8 +319,8 @@ const pdf=await html2pdf().set({
 
 margin:0,
 image:{type:"jpeg",quality:1},
-html2canvas:{scale:3,useCORS:true},
-jsPDF:{unit:"pt",format:"letter"}
+html2canvas:{scale:2,useCORS:true},
+jsPDF:{unit:"pt",format:"letter",orientation:"portrait"}
 
 }).from(element).outputPdf("datauristring")
 
@@ -331,6 +340,19 @@ file:base64
 })
 
 alert("PDF guardado en Google Drive")
+
+}
+
+function limpiar(){
+
+document.getElementById("paciente").value=""
+document.getElementById("doctor").value=""
+document.getElementById("alineador").value=""
+document.getElementById("sup").value=""
+document.getElementById("inf").value=""
+
+document.querySelectorAll("select").forEach(s=>s.value="")
+document.querySelectorAll(".symbol").forEach(s=>s.innerText="")
 
 }
 
