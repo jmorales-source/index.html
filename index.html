@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -92,11 +93,6 @@ text-align:center;
 font-size:16px;
 }
 
-.symbol{
-cursor:pointer;
-font-size:18px;
-}
-
 .teeth{
 text-align:center;
 margin:4px 0;
@@ -170,28 +166,18 @@ INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 
 <h4>DIAGRAMA DE IPR, ATACHES Y ADITAMENTOS</h4>
 
-<!-- SUPERIOR -->
-
 <div class="ipr-shift" id="iprRealTop"></div>
-
 <div class="grid" id="numsTop"></div>
-
 <div class="grid" id="iprTop"></div>
-
 <div class="grid" id="whiteTop"></div>
 
 <div class="teeth">
 <img src="https://raw.githubusercontent.com/jmorales-source/index.html/main/DENTOGRAMA.png">
 </div>
 
-<!-- INFERIOR -->
-
 <div class="grid" id="whiteBottom"></div>
-
 <div class="grid" id="iprBottom"></div>
-
 <div class="grid" id="numsBottom"></div>
-
 <div class="ipr-shift" id="iprRealBottom"></div>
 
 <div class="instructions">
@@ -230,6 +216,8 @@ Total alineadores inferiores:
 
 <script>
 
+const WEBAPP_URL="https://script.google.com/macros/s/AKfycbwcYJHfJozSrhKxOUF2sSNCCsWXC3NJYCnX5wJ7SuimnCJ8NFhq8SwXIfg_bbcD-39-/exec"
+
 let numsTop=[
 "1.8","1.7","1.6","1.5","1.4","1.3","1.2","1.1",
 "2.1","2.2","2.3","2.4","2.5","2.6","2.7","2.8"
@@ -241,115 +229,71 @@ let numsBottom=[
 ]
 
 function fillNumbers(id,data){
-
 let div=document.getElementById(id)
-
 data.forEach(n=>{
 let c=document.createElement("div")
 c.className="cell"
 c.innerText=n
 div.appendChild(c)
 })
-
 }
 
 function createWhiteRow(id){
-
 let div=document.getElementById(id)
-
 for(let i=0;i<16;i++){
-
 let c=document.createElement("div")
 c.className="cell whitecell"
-
 c.onclick=()=>{
-
 let op=prompt("1 Atache ⬜\n2 Botón para elástico ⭕\n3 Gancho plástico 🔁\n4 Plano de mordida 🔶\n5 Punto de presión 🔘\n0 borrar")
-
-let map={
-1:"⬜",
-2:"⭕",
-3:"🔁",
-4:"🔶",
-5:"🔘"
-}
-
+let map={1:"⬜",2:"⭕",3:"🔁",4:"🔶",5:"🔘"}
 c.innerText=map[op]||""
-
 }
-
 div.appendChild(c)
-
 }
-
 }
 
 function createIPR(id){
-
 let div=document.getElementById(id)
-
 for(let i=0;i<16;i++){
-
 let c=document.createElement("div")
 c.className="cell ipr"
-
 let s=document.createElement("select")
-
 let vals=["","⬜"]
-
 vals.forEach(v=>{
 let o=document.createElement("option")
 o.text=v
 s.add(o)
 })
-
 c.appendChild(s)
 div.appendChild(c)
-
 }
-
 }
 
 function createIPRReal(id){
-
 let div=document.getElementById(id)
-
 for(let i=0;i<17;i++){
-
 let c=document.createElement("div")
 c.className="cell"
-
 if(i>0 && i<16){
-
 let s=document.createElement("select")
-
 let vals=["","0.1","0.2","0.3","0.4","0.5"]
-
 vals.forEach(v=>{
 let o=document.createElement("option")
 o.text=v
 s.add(o)
 })
-
 c.appendChild(s)
-
 }
-
 div.appendChild(c)
-
 }
-
 }
 
 fillNumbers("numsTop",numsTop)
 fillNumbers("numsBottom",numsBottom)
-
 createIPRReal("iprRealTop")
 createIPRReal("iprRealBottom")
-
 createIPR("iprTop")
 createIPR("iprBottom")
-
 createWhiteRow("whiteTop")
 createWhiteRow("whiteBottom")
 
@@ -369,7 +313,22 @@ html2canvas:{scale:3,useCORS:true,scrollY:0},
 jsPDF:{unit:"pt",format:"letter",orientation:"portrait"}
 }
 
-html2pdf().set(opt).from(element).save()
+html2pdf().set(opt).from(element).outputPdf("datauristring").then(function(pdf){
+
+let base64=pdf.split(",")[1]
+
+fetch(WEBAPP_URL,{
+method:"POST",
+body:JSON.stringify({
+patient:paciente,
+name:nombre,
+file:base64
+})
+})
+
+alert("PDF guardado en Drive")
+
+})
 
 }
 
@@ -390,3 +349,4 @@ document.querySelectorAll(".whitecell").forEach(s=>s.innerText="")
 
 </body>
 </html>
+```
