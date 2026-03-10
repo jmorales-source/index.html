@@ -1,155 +1,118 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <meta charset="UTF-8">
-<title>INVEASYBLE Planner</title>
+<title>INVEASYBLE Plan</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
 
 body{
+background:#eaeaea;
 font-family:Arial;
-background:#f4f4f4;
-margin:0;
-}
-
-.toolbar{
-
-background:white;
-padding:15px;
-border-bottom:1px solid #ddd;
-
-}
-
-.toolbar input{
-
-padding:6px;
-margin-right:10px;
-
-}
-
-button{
-
-padding:8px 16px;
-cursor:pointer;
-
 }
 
 #sheet{
 
 width:900px;
-height:1100px;
-margin:30px auto;
+height:1200px;
 
-background:white;
+margin:auto;
+
+background:url("https://github.com/jmorales-source/inveasyble-website-assets/blob/main/INVEASYBLE%20(1).png?raw=true");
+
+background-size:contain;
+background-repeat:no-repeat;
 
 position:relative;
 
-border:1px solid #ccc;
+}
+
+input{
+
+border:none;
+border-bottom:1px solid #999;
+font-size:16px;
+background:transparent;
 
 }
 
-.logo{
-
-text-align:center;
-margin-top:20px;
-
-}
-
-.logo img{
-
-width:220px;
-
-}
-
-.fields{
-
-width:70%;
-margin:20px auto;
-
-}
-
-.fields input{
-
-width:100%;
-padding:8px;
-margin-bottom:10px;
-
-}
-
-#dientes{
+#paciente{
 
 position:absolute;
-top:320px;
-left:60px;
+top:165px;
+left:200px;
+width:500px;
+
+}
+
+#doctor{
+
+position:absolute;
+top:215px;
+left:200px;
+width:500px;
+
+}
+
+.ipr{
+
+position:absolute;
+top:330px;
+left:70px;
 
 display:grid;
-grid-template-columns:repeat(16,50px);
-gap:8px;
+grid-template-columns:repeat(16,48px);
+gap:2px;
+
+}
+
+.ipr select{
+
+width:48px;
+height:30px;
+background:#b77492;
+color:white;
+border:none;
+
+}
+
+.dientes{
+
+position:absolute;
+top:430px;
+left:70px;
+
+display:grid;
+grid-template-columns:repeat(16,48px);
+gap:2px;
 
 }
 
 .diente{
 
-width:50px;
-height:50px;
-border:1px solid #ddd;
-border-radius:6px;
-background:white;
-position:relative;
+width:48px;
+height:40px;
 cursor:pointer;
 
 }
 
 .icon{
 
-width:24px;
-position:absolute;
-top:13px;
-left:13px;
+width:20px;
+display:block;
+margin:auto;
+margin-top:10px;
 
 }
 
-#ipr{
+button{
 
-position:absolute;
-top:280px;
-left:60px;
-
-display:grid;
-grid-template-columns:repeat(16,50px);
-gap:8px;
-
-}
-
-#ipr select{
-
-width:50px;
-height:30px;
-background:#b87492;
-color:white;
-border:none;
-
-}
-
-.historial{
-
-position:fixed;
-right:20px;
-top:120px;
-width:220px;
-background:white;
-border:1px solid #ccc;
-padding:15px;
-
-}
-
-.historial h3{
-
-margin-top:0;
+display:block;
+margin:20px auto;
+padding:10px 25px;
 
 }
 
@@ -159,54 +122,50 @@ margin-top:0;
 
 <body>
 
-<div class="toolbar">
-
-Paciente
-<input id="paciente">
-
-Doctor
-<input id="doctor">
-
-<button onclick="guardarCaso()">Guardar</button>
-
-<button onclick="descargarPDF()">Exportar PDF</button>
-
-</div>
-
 <div id="sheet">
 
-<div class="logo">
+<input id="paciente" placeholder="Paciente">
 
-<img src="https://github.com/jmorales-source/inveasyble-website-assets/blob/main/INVEASYBLE%20(1).png?raw=true">
+<input id="doctor" placeholder="Doctor">
 
-</div>
+<div class="ipr" id="ipr"></div>
 
-<div id="ipr"></div>
-
-<div id="dientes"></div>
+<div class="dientes" id="dientes"></div>
 
 </div>
 
-<div class="historial">
-
-<h3>Historial</h3>
-
-<ul id="lista"></ul>
-
-</div>
+<button onclick="exportar()">Exportar PDF</button>
 
 <script>
 
-let dientesContainer=document.getElementById("dientes")
-let iprContainer=document.getElementById("ipr")
+let ipr=document.getElementById("ipr")
+let dientes=document.getElementById("dientes")
 
-let iconos={
+let simbolos={
 
-atache:"https://cdn-icons-png.flaticon.com/512/1828/1828817.png",
-boton:"https://cdn-icons-png.flaticon.com/512/1828/1828919.png",
-gancho:"https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
-plano:"https://cdn-icons-png.flaticon.com/512/1828/1828961.png",
-presion:"https://cdn-icons-png.flaticon.com/512/1828/1828899.png"
+1:"https://cdn-icons-png.flaticon.com/512/1828/1828817.png",
+2:"https://cdn-icons-png.flaticon.com/512/1828/1828919.png",
+3:"https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
+4:"https://cdn-icons-png.flaticon.com/512/1828/1828961.png",
+5:"https://cdn-icons-png.flaticon.com/512/1828/1828899.png"
+
+}
+
+for(let i=0;i<16;i++){
+
+let s=document.createElement("select")
+
+let v=["","0.1","0.2","0.3","0.4","0.5"]
+
+v.forEach(x=>{
+
+let o=document.createElement("option")
+o.text=x
+s.add(o)
+
+})
+
+ipr.appendChild(s)
 
 }
 
@@ -216,131 +175,42 @@ let d=document.createElement("div")
 
 d.className="diente"
 
-d.onclick=()=>menuSimbolo(d)
+d.onclick=()=>{
 
-dientesContainer.appendChild(d)
+let op=prompt("1 Atache\n2 Botón\n3 Gancho\n4 Plano\n5 Presión\n0 borrar")
 
-}
+d.innerHTML=""
 
-for(let i=0;i<16;i++){
+if(simbolos[op]){
 
-let s=document.createElement("select")
+let img=document.createElement("img")
 
-let valores=["","0.1","0.2","0.3","0.4","0.5"]
+img.src=simbolos[op]
 
-valores.forEach(v=>{
+img.className="icon"
 
-let o=document.createElement("option")
-o.text=v
-s.add(o)
-
-})
-
-iprContainer.appendChild(s)
-
-}
-
-function menuSimbolo(diente){
-
-let opcion=prompt(
-
-"Selecciona símbolo:\n\n1 Atache\n2 Botón\n3 Gancho\n4 Plano\n5 Presión\n0 Limpiar"
-
-)
-
-let tipo=null
-
-if(opcion==1) tipo="atache"
-if(opcion==2) tipo="boton"
-if(opcion==3) tipo="gancho"
-if(opcion==4) tipo="plano"
-if(opcion==5) tipo="presion"
-
-diente.innerHTML=""
-
-if(tipo){
-
-let icon=document.createElement("img")
-
-icon.src=iconos[tipo]
-
-icon.className="icon"
-
-diente.appendChild(icon)
+d.appendChild(img)
 
 }
 
 }
 
-function guardarCaso(){
-
-let paciente=document.getElementById("paciente").value
-
-if(!paciente){
-
-alert("Ingrese paciente")
-return
+dientes.appendChild(d)
 
 }
 
-let data={
-
-paciente,
-doctor:document.getElementById("doctor").value,
-fecha:new Date().toLocaleDateString()
-
-}
-
-let historial=JSON.parse(localStorage.getItem("inveasyble")||"[]")
-
-historial.push(data)
-
-localStorage.setItem("inveasyble",JSON.stringify(historial))
-
-cargarHistorial()
-
-}
-
-function cargarHistorial(){
-
-let lista=document.getElementById("lista")
-
-lista.innerHTML=""
-
-let historial=JSON.parse(localStorage.getItem("inveasyble")||"[]")
-
-historial.forEach(p=>{
-
-let li=document.createElement("li")
-
-li.innerText=p.paciente+" - "+p.fecha
-
-lista.appendChild(li)
-
-})
-
-}
-
-cargarHistorial()
-
-function descargarPDF(){
-
-let element=document.getElementById("sheet")
+function exportar(){
 
 html2pdf().set({
 
 margin:0,
-filename:"inveasyble_plan.pdf",
+filename:"plan_inveasyble.pdf",
 html2canvas:{scale:4},
 jsPDF:{unit:"mm",format:"a4"}
 
-}).from(element).save()
+}).from(document.getElementById("sheet")).save()
 
-setTimeout(()=>{
-
-location.reload()
-
-},1500)
+setTimeout(()=>location.reload(),1500)
 
 }
 
