@@ -16,7 +16,7 @@ background:#ececec;
 
 #page{
 width:816px;
-min-height:1056px;
+height:auto;
 background:white;
 margin:auto;
 padding:25px;
@@ -62,7 +62,6 @@ font-size:14px;
 .grid{
 display:grid;
 grid-template-columns:repeat(16,1fr);
-gap:0;
 }
 
 .cell{
@@ -72,6 +71,10 @@ display:flex;
 align-items:center;
 justify-content:center;
 font-size:13px;
+}
+
+.whitecell{
+background:white;
 }
 
 .ipr{
@@ -129,11 +132,15 @@ cursor:pointer;
 text-align:center;
 }
 
-/* NUEVO IPR ENTRE DIENTES */
+/* IPR desplazado */
 
 .ipr-shift{
-margin-left:25px;
-grid-template-columns:repeat(15,1fr);
+display:grid;
+grid-template-columns:repeat(17,1fr);
+}
+
+.ipr-shift .cell{
+border:1px solid #999;
 }
 
 .ipr-shift select{
@@ -141,7 +148,6 @@ width:100%;
 height:100%;
 border:none;
 text-align:center;
-font-size:13px;
 }
 
 </style>
@@ -178,19 +184,25 @@ INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 
 <div class="grid" id="numsTop"></div>
 
-<div class="grid ipr-shift" id="iprRealTop"></div>
+<div class="ipr-shift" id="iprRealTop"></div>
 
 <div class="grid" id="simTop"></div>
+
 <div class="grid" id="iprTop"></div>
+
+<div class="grid" id="whiteTop"></div>
 
 <div class="teeth">
 <img src="https://raw.githubusercontent.com/jmorales-source/index.html/main/DENTOGRAMA.png">
 </div>
 
 <div class="grid" id="iprBottom"></div>
+
+<div class="grid" id="whiteBottom"></div>
+
 <div class="grid" id="simBottom"></div>
 
-<div class="grid ipr-shift" id="iprRealBottom"></div>
+<div class="ipr-shift" id="iprRealBottom"></div>
 
 <div class="grid" id="numsBottom"></div>
 
@@ -213,10 +225,10 @@ Total alineadores inferiores:
 
 <b>SIMBOLOGÍA:</b><br>
 
-⬜ Atache - (Se realiza en resina utilizando la plantilla)<br>
-⭕ Botón para elástico - (Metálico, estético o en resina)<br>
-🔁 Gancho plástico para elástico - (Aditamento en el alineador)<br>
-🔶 Plano de mordida - (Aditamento en el alineador. No se realizan en resina)<br>
+⬜ Atache<br>
+⭕ Botón para elástico<br>
+🔁 Gancho plástico<br>
+🔶 Plano de mordida<br>
 🔘 Punto de presión
 
 </div>
@@ -256,6 +268,20 @@ div.appendChild(c)
 
 }
 
+function createWhiteRow(id){
+
+let div=document.getElementById(id)
+
+for(let i=0;i<16;i++){
+
+let c=document.createElement("div")
+c.className="cell whitecell"
+div.appendChild(c)
+
+}
+
+}
+
 function createIPR(id){
 
 let div=document.getElementById(id)
@@ -286,14 +312,14 @@ function createIPRReal(id){
 
 let div=document.getElementById(id)
 
-for(let i=0;i<15;i++){
+for(let i=0;i<17;i++){
 
 let c=document.createElement("div")
 c.className="cell"
 
-let s=document.createElement("select")
+if(i>0 && i<15){
 
-s.setAttribute("contenteditable","true")
+let s=document.createElement("select")
 
 let vals=["","0.1","0.2","0.3","0.4","0.5"]
 
@@ -304,6 +330,9 @@ s.add(o)
 })
 
 c.appendChild(s)
+
+}
+
 div.appendChild(c)
 
 }
@@ -344,20 +373,23 @@ div.appendChild(c)
 fillNumbers("numsTop",numsTop)
 fillNumbers("numsBottom",numsBottom)
 
-createIPR("iprTop")
-createIPR("iprBottom")
-
 createIPRReal("iprRealTop")
 createIPRReal("iprRealBottom")
 
 createSymbols("simTop")
 createSymbols("simBottom")
 
+createIPR("iprTop")
+createIPR("iprBottom")
+
+createWhiteRow("whiteTop")
+createWhiteRow("whiteBottom")
+
 function exportPDF(){
 
 let paciente=document.getElementById("paciente").value || "PACIENTE"
 
-let nombre="INVEASYBLE - PLAN - "+paciente+".pdf"
+let nombre="INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO : "+paciente+".pdf"
 
 const element=document.getElementById("page")
 
@@ -365,7 +397,7 @@ const opt={
 margin:0,
 filename:nombre,
 image:{type:"jpeg",quality:1},
-html2canvas:{scale:3,useCORS:true},
+html2canvas:{scale:3,useCORS:true,scrollY:0},
 jsPDF:{unit:"pt",format:"letter",orientation:"portrait"}
 }
 
