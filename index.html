@@ -3,30 +3,39 @@
 <head>
 
 <meta charset="UTF-8">
-<title>INVEASYBLE Plan</title>
+
+<title>INVEASYBLE PLAN</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
 
 body{
-background:#eaeaea;
 font-family:Arial;
+background:#e9e9e9;
 }
 
-#sheet{
+#page{
 
-width:900px;
-height:1200px;
-
+width:816px;
+height:1056px;
+background:white;
 margin:auto;
+padding:30px;
+box-sizing:border-box;
 
-background:url("https://github.com/jmorales-source/inveasyble-website-assets/blob/main/INVEASYBLE%20(1).png?raw=true");
+}
 
-background-size:contain;
-background-repeat:no-repeat;
+.logo{
 
-position:relative;
+text-align:center;
+margin-bottom:20px;
+
+}
+
+.logo img{
+
+width:180px;
 
 }
 
@@ -34,84 +43,70 @@ input{
 
 border:none;
 border-bottom:1px solid #999;
-font-size:16px;
-background:transparent;
+width:300px;
+margin-left:10px;
 
 }
 
-#paciente{
+h3{
 
-position:absolute;
-top:165px;
-left:200px;
-width:500px;
+margin-top:25px;
 
 }
 
-#doctor{
+.grid{
 
-position:absolute;
-top:215px;
-left:200px;
-width:500px;
+display:grid;
+grid-template-columns:repeat(16,1fr);
+
+}
+
+.cell{
+
+border:1px solid #aaa;
+height:30px;
+text-align:center;
+font-size:12px;
+display:flex;
+align-items:center;
+justify-content:center;
 
 }
 
 .ipr{
 
-position:absolute;
-top:330px;
-left:70px;
-
-display:grid;
-grid-template-columns:repeat(16,48px);
-gap:2px;
+background:#b87492;
 
 }
 
 .ipr select{
 
-width:48px;
-height:30px;
-background:#b77492;
-color:white;
+width:100%;
+height:100%;
 border:none;
+background:#b87492;
+color:white;
+text-align:center;
 
 }
 
-.dientes{
+.symbol{
 
-position:absolute;
-top:430px;
-left:70px;
-
-display:grid;
-grid-template-columns:repeat(16,48px);
-gap:2px;
-
-}
-
-.diente{
-
-width:48px;
-height:40px;
 cursor:pointer;
 
 }
 
-.icon{
+.instructions{
 
-width:20px;
-display:block;
-margin:auto;
-margin-top:10px;
+margin-top:20px;
+font-size:14px;
 
 }
 
 button{
 
-display:block;
 margin:20px auto;
+display:block;
 padding:10px 25px;
 
 }
@@ -122,95 +117,179 @@ padding:10px 25px;
 
 <body>
 
-<div id="sheet">
+<div id="page">
 
-<input id="paciente" placeholder="Paciente">
+<div class="logo">
+<img src="https://github.com/jmorales-source/inveasyble-website-assets/blob/main/INVEASYBLE%20(1).png?raw=true">
+</div>
 
-<input id="doctor" placeholder="Doctor">
+<div>
 
-<div class="ipr" id="ipr"></div>
+Paciente <input id="paciente">
 
-<div class="dientes" id="dientes"></div>
+Doctor <input id="doctor">
 
 </div>
 
-<button onclick="exportar()">Exportar PDF</button>
+<h3>DIAGRAMA DE IPR, ATACHES Y ADITAMENTOS</h3>
+
+<!-- NUMEROS SUPERIORES -->
+
+<div class="grid" id="numsTop"></div>
+
+<!-- IPR SUPERIOR -->
+
+<div class="grid" id="iprTop"></div>
+
+<!-- SIMBOLOS SUPERIOR -->
+
+<div class="grid" id="simTop"></div>
+
+<!-- SIMBOLOS INFERIOR -->
+
+<div class="grid" id="simBottom"></div>
+
+<!-- IPR INFERIOR -->
+
+<div class="grid" id="iprBottom"></div>
+
+<!-- NUMEROS INFERIOR -->
+
+<div class="grid" id="numsBottom"></div>
+
+<div class="instructions">
+
+<b>INSTRUCCIONES:</b><br><br>
+
+IPR <span style="color:#33c6d4">CELESTE</span> antes del alineador #1.<br>
+
+Total alineadores superiores: ______<br>
+Total alineadores inferiores: ______
+
+<br><br>
+
+<b>SIMBOLOGÍA</b><br>
+
+⬜ Atache - (Se realiza en resina utilizando la plantilla)<br>
+⭕ Botón para elástico - (Metálico, estético o en resina)<br>
+🔁 Gancho plástico para elástico - (Aditamento en el alineador)<br>
+🔶 Plano de mordida - (Aditamento en el alineador. No se realizan en resina)<br>
+🔘 Punto de presión
+
+</div>
+
+</div>
+
+<button onclick="exportPDF()">Exportar PDF</button>
 
 <script>
 
-let ipr=document.getElementById("ipr")
-let dientes=document.getElementById("dientes")
+let numsTop=[
+"1.8","1.7","1.6","1.5","1.4","1.3","1.2","1.1",
+"2.1","2.2","2.3","2.4","2.5","2.6","2.7","2.8"
+]
 
-let simbolos={
+let numsBottom=[
+"4.8","4.7","4.6","4.5","4.4","4.3","4.2","4.1",
+"3.1","3.2","3.3","3.4","3.5","3.6","3.7","3.8"
+]
 
-1:"https://cdn-icons-png.flaticon.com/512/1828/1828817.png",
-2:"https://cdn-icons-png.flaticon.com/512/1828/1828919.png",
-3:"https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
-4:"https://cdn-icons-png.flaticon.com/512/1828/1828961.png",
-5:"https://cdn-icons-png.flaticon.com/512/1828/1828899.png"
+function fillNumbers(id,data){
+
+let div=document.getElementById(id)
+
+data.forEach(n=>{
+
+let c=document.createElement("div")
+c.className="cell"
+c.innerText=n
+
+div.appendChild(c)
+
+})
 
 }
 
+function createIPR(id){
+
+let div=document.getElementById(id)
+
 for(let i=0;i<16;i++){
+
+let c=document.createElement("div")
+c.className="cell ipr"
 
 let s=document.createElement("select")
 
-let v=["","0.1","0.2","0.3","0.4","0.5"]
+let vals=["","0.1","0.2","0.3","0.4","0.5"]
 
-v.forEach(x=>{
+vals.forEach(v=>{
 
 let o=document.createElement("option")
-o.text=x
+o.text=v
 s.add(o)
 
 })
 
-ipr.appendChild(s)
+c.appendChild(s)
 
-}
-
-for(let i=0;i<32;i++){
-
-let d=document.createElement("div")
-
-d.className="diente"
-
-d.onclick=()=>{
-
-let op=prompt("1 Atache\n2 Botón\n3 Gancho\n4 Plano\n5 Presión\n0 borrar")
-
-d.innerHTML=""
-
-if(simbolos[op]){
-
-let img=document.createElement("img")
-
-img.src=simbolos[op]
-
-img.className="icon"
-
-d.appendChild(img)
+div.appendChild(c)
 
 }
 
 }
 
-dientes.appendChild(d)
+function createSymbols(id){
+
+let div=document.getElementById(id)
+
+for(let i=0;i<16;i++){
+
+let c=document.createElement("div")
+
+c.className="cell symbol"
+
+c.onclick=()=>{
+
+let op=prompt("1 ⬜\n2 ⭕\n3 🔁\n4 🔶\n5 🔘\n0 borrar")
+
+let map={
+1:"⬜",
+2:"⭕",
+3:"🔁",
+4:"🔶",
+5:"🔘"
+}
+
+c.innerText=map[op]||""
 
 }
 
-function exportar(){
+div.appendChild(c)
+
+}
+
+}
+
+fillNumbers("numsTop",numsTop)
+fillNumbers("numsBottom",numsBottom)
+
+createIPR("iprTop")
+createIPR("iprBottom")
+
+createSymbols("simTop")
+createSymbols("simBottom")
+
+function exportPDF(){
 
 html2pdf().set({
 
 margin:0,
-filename:"plan_inveasyble.pdf",
+filename:"inveasyble_plan.pdf",
 html2canvas:{scale:4},
-jsPDF:{unit:"mm",format:"a4"}
+jsPDF:{unit:"pt",format:"letter"}
 
-}).from(document.getElementById("sheet")).save()
-
-setTimeout(()=>location.reload(),1500)
+}).from(document.getElementById("page")).save()
 
 }
 
