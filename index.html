@@ -16,7 +16,7 @@ background:#ececec;
 
 #page{
 width:816px;
-height:1056px;
+min-height:1056px;
 background:white;
 margin:auto;
 padding:30px;
@@ -137,7 +137,7 @@ text-align:center;
 <div id="page">
 
 <div class="logo">
-<img crossorigin="anonymous" src="https://github.com/jmorales-source/inveasyble-website-assets/blob/main/INVEASYBLE%20(1).png?raw=true">
+<img src="https://raw.githubusercontent.com/jmorales-source/inveasyble-website-assets/main/INVEASYBLE%20(1).png">
 </div>
 
 <div class="header-title">
@@ -167,7 +167,7 @@ INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 <div class="grid" id="simTop"></div>
 
 <div class="teeth">
-<img crossorigin="anonymous" src="https://github.com/jmorales-source/index.html/blob/main/DENTOGRAMA.png?raw=true">
+<img src="https://raw.githubusercontent.com/jmorales-source/index.html/main/DENTOGRAMA.png">
 </div>
 
 <div class="grid" id="simBottom"></div>
@@ -319,7 +319,7 @@ const pdf=await html2pdf().set({
 
 margin:0,
 image:{type:"jpeg",quality:1},
-html2canvas:{scale:2,useCORS:true},
+html2canvas:{scale:3,useCORS:true},
 jsPDF:{unit:"pt",format:"letter",orientation:"portrait"}
 
 }).from(element).outputPdf("datauristring")
