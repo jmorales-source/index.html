@@ -25,11 +25,9 @@ box-shadow:0 0 10px rgba(0,0,0,0.15);
 
 }
 
-/* HEADER */
-
 .logo{
 text-align:center;
-margin-bottom:15px;
+margin-bottom:10px;
 }
 
 .logo img{
@@ -37,43 +35,31 @@ width:200px;
 }
 
 .header-title{
-
 background:#b87492;
 color:white;
 padding:8px;
 text-align:center;
 font-weight:bold;
 margin-bottom:10px;
-
 }
 
-/* TABLE */
-
 .info-table{
-
 width:100%;
 border-collapse:collapse;
 margin-bottom:20px;
-
 }
 
 .info-table td{
-
 border:1px dashed #b87492;
 padding:8px;
-
 }
 
 .info-table input{
-
 width:100%;
 border:none;
 outline:none;
 font-size:14px;
-
 }
-
-/* GRID */
 
 .grid{
 display:grid;
@@ -81,14 +67,12 @@ grid-template-columns:repeat(16,1fr);
 }
 
 .cell{
-
 border:1px solid #999;
 height:32px;
 display:flex;
 align-items:center;
 justify-content:center;
 font-size:12px;
-
 }
 
 .ipr{
@@ -96,54 +80,49 @@ background:#b87492;
 }
 
 .ipr select{
-
 width:100%;
 height:100%;
 border:none;
 background:#b87492;
 color:white;
 text-align:center;
-
 }
 
 .symbol{
-
 cursor:pointer;
 font-size:18px;
-
 }
 
-/* INSTRUCTIONS */
+.teeth{
+text-align:center;
+margin:6px 0;
+}
+
+.teeth img{
+width:720px;
+}
 
 .instructions{
-
 margin-top:20px;
 font-size:14px;
-
 }
 
 .instructions input{
-
 border:none;
 border-bottom:1px solid #aaa;
-width:80px;
-
+width:90px;
 }
 
 .symbology{
-
 margin-top:15px;
 font-size:13px;
-
 }
 
 button{
-
 display:block;
 margin:25px auto;
 padding:10px 25px;
 cursor:pointer;
-
 }
 
 </style>
@@ -179,10 +158,23 @@ INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 <h4>DIAGRAMA DE IPR, ATACHES Y ADITAMENTOS</h4>
 
 <div class="grid" id="numsTop"></div>
+
 <div class="grid" id="iprTop"></div>
+
 <div class="grid" id="simTop"></div>
+
+<div class="teeth">
+<img src="https://github.com/jmorales-source/index.html/blob/main/DENTOGRAMA.png?raw=true">
+</div>
+
 <div class="grid" id="simBottom"></div>
+
+<div class="teeth">
+<img src="https://github.com/jmorales-source/index.html/blob/main/DENTOGRAMA.png?raw=true">
+</div>
+
 <div class="grid" id="iprBottom"></div>
+
 <div class="grid" id="numsBottom"></div>
 
 <div class="instructions">
