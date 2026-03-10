@@ -16,7 +16,6 @@ background:#ececec;
 
 #page{
 width:816px;
-height:auto;
 background:white;
 margin:auto;
 padding:25px;
@@ -89,12 +88,26 @@ border:none;
 background:#b87492;
 color:white;
 text-align:center;
-font-size:16px;
+font-size:14px;
 }
 
-.symbol{
-cursor:pointer;
-font-size:18px;
+.ipr-shift{
+display:grid;
+grid-template-columns:repeat(17,1fr);
+}
+
+.ipr-shift .cell{
+border:1px solid #999;
+padding:0;
+}
+
+.ipr-shift select{
+width:100%;
+height:100%;
+border:none;
+background:transparent;
+text-align:center;
+appearance:none;
 }
 
 .teeth{
@@ -131,11 +144,6 @@ cursor:pointer;
 
 .buttons{
 text-align:center;
-}
-
-.ipr-shift{
-display:grid;
-grid-template-columns:repeat(17,1fr);
 }
 
 </style>
@@ -196,15 +204,13 @@ INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 
 <div class="instructions">
 
-<b>INSTRUCCIONES:</b><br><br>
-
-IPR <span style="color:#33c6d4">CELESTE</span> antes del alineador #:
+IPR celeste antes alineador:
 <input id="alineador"><br><br>
 
-Total alineadores superiores:
+Alineadores sup:
 <input id="sup"><br>
 
-Total alineadores inferiores:
+Alineadores inf:
 <input id="inf">
 
 </div>
@@ -214,10 +220,10 @@ Total alineadores inferiores:
 <b>SIMBOLOGÍA:</b><br>
 
 ⬜ Atache<br>
-⭕ Botón para elástico<br>
+⭕ Botón elástico<br>
 🔁 Gancho plástico<br>
-🔶 Plano de mordida<br>
-🔘 Punto de presión
+🔶 Plano mordida<br>
+🔘 Punto presión
 
 </div>
 
@@ -225,7 +231,7 @@ Total alineadores inferiores:
 
 <div class="buttons">
 <button onclick="exportPDF()">Exportar PDF</button>
-<button onclick="limpiar()">Limpiar formulario</button>
+<button onclick="limpiar()">Limpiar</button>
 </div>
 
 <script>
@@ -353,11 +359,11 @@ createIPR("iprBottom")
 createWhiteRow("whiteTop")
 createWhiteRow("whiteBottom")
 
-function exportPDF(){
+async function exportPDF(){
 
 let paciente=document.getElementById("paciente").value || "PACIENTE"
 
-let nombre="INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO : "+paciente+".pdf"
+let nombre="INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO :"+paciente+".pdf"
 
 const element=document.getElementById("page")
 
@@ -365,11 +371,26 @@ const opt={
 margin:0,
 filename:nombre,
 image:{type:"jpeg",quality:1},
-html2canvas:{scale:3,useCORS:true,scrollY:0},
+html2canvas:{scale:3,useCORS:true},
 jsPDF:{unit:"pt",format:"letter",orientation:"portrait"}
 }
 
-html2pdf().set(opt).from(element).save()
+const worker=html2pdf().set(opt).from(element)
+
+const pdf=await worker.outputPdf("datauristring")
+
+const base64=pdf.split(",")[1]
+
+await fetch("https://script.google.com/macros/s/AKfycbwU0JCrpJBf1jthmnLhLtRWjJFyn2_hruLmLh_F4kFAMoT8PTKqZH9Q6EpmylHXgCAO/exec",{
+method:"POST",
+body:JSON.stringify({
+name:nombre,
+file:base64,
+patient:paciente
+})
+})
+
+alert("PDF enviado a Drive")
 
 }
 
