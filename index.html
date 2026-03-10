@@ -16,7 +16,6 @@ background:#ececec;
 
 #page{
 width:816px;
-height:auto;
 background:white;
 margin:auto;
 padding:25px;
@@ -77,11 +76,11 @@ font-size:13px;
 background:white;
 }
 
-.ipr{
+.pink{
 background:#b87492;
 }
 
-.ipr select{
+.pink select{
 width:100%;
 height:100%;
 border:none;
@@ -91,56 +90,23 @@ text-align:center;
 font-size:16px;
 }
 
+.teeth{
+text-align:center;
+margin:6px 0;
+}
+
+.teeth img{
+width:100%;
+}
+
 .symbol{
 cursor:pointer;
 font-size:18px;
 }
 
-.teeth{
-text-align:center;
-margin:4px 0;
-}
-
-.teeth img{
-width:100%;
-transform:scaleX(1.03);
-}
-
-.instructions{
-margin-top:15px;
-font-size:14px;
-}
-
-.instructions input{
-border:none;
-border-bottom:1px solid #aaa;
-width:90px;
-}
-
-.symbology{
-margin-top:10px;
-font-size:13px;
-}
-
-button{
-margin:25px 10px;
-padding:10px 25px;
-cursor:pointer;
-}
-
-.buttons{
-text-align:center;
-}
-
-/* IPR desplazado */
-
 .ipr-shift{
 display:grid;
 grid-template-columns:repeat(17,1fr);
-}
-
-.ipr-shift .cell{
-border:1px solid #999;
 }
 
 .ipr-shift select{
@@ -150,8 +116,18 @@ border:none;
 text-align:center;
 }
 
-</style>
+.buttons{
+text-align:center;
+margin-top:20px;
+}
 
+button{
+padding:10px 25px;
+margin:10px;
+cursor:pointer;
+}
+
+</style>
 </head>
 
 <body>
@@ -182,13 +158,13 @@ INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 
 <h4>DIAGRAMA DE IPR, ATACHES Y ADITAMENTOS</h4>
 
-<div class="grid" id="numsTop"></div>
+<!-- SUPERIOR -->
 
 <div class="ipr-shift" id="iprRealTop"></div>
 
-<div class="grid" id="simTop"></div>
+<div class="grid" id="numsTop"></div>
 
-<div class="grid" id="iprTop"></div>
+<div class="grid" id="pinkTop"></div>
 
 <div class="grid" id="whiteTop"></div>
 
@@ -196,42 +172,15 @@ INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 <img src="https://raw.githubusercontent.com/jmorales-source/index.html/main/DENTOGRAMA.png">
 </div>
 
-<div class="grid" id="iprBottom"></div>
+<!-- INFERIOR -->
 
 <div class="grid" id="whiteBottom"></div>
 
-<div class="grid" id="simBottom"></div>
-
-<div class="ipr-shift" id="iprRealBottom"></div>
+<div class="grid" id="pinkBottom"></div>
 
 <div class="grid" id="numsBottom"></div>
 
-<div class="instructions">
-
-<b>INSTRUCCIONES:</b><br><br>
-
-IPR <span style="color:#33c6d4">CELESTE</span> antes del alineador #:
-<input id="alineador"><br><br>
-
-Total alineadores superiores:
-<input id="sup"><br>
-
-Total alineadores inferiores:
-<input id="inf">
-
-</div>
-
-<div class="symbology">
-
-<b>SIMBOLOGÍA:</b><br>
-
-⬜ Atache<br>
-⭕ Botón para elástico<br>
-🔁 Gancho plástico<br>
-🔶 Plano de mordida<br>
-🔘 Punto de presión
-
-</div>
+<div class="ipr-shift" id="iprRealBottom"></div>
 
 </div>
 
@@ -257,13 +206,10 @@ function fillNumbers(id,data){
 let div=document.getElementById(id)
 
 data.forEach(n=>{
-
 let c=document.createElement("div")
 c.className="cell"
 c.innerText=n
-
 div.appendChild(c)
-
 })
 
 }
@@ -276,20 +222,21 @@ for(let i=0;i<16;i++){
 
 let c=document.createElement("div")
 c.className="cell whitecell"
+
 div.appendChild(c)
 
 }
 
 }
 
-function createIPR(id){
+function createPinkRow(id){
 
 let div=document.getElementById(id)
 
 for(let i=0;i<16;i++){
 
 let c=document.createElement("div")
-c.className="cell ipr"
+c.className="cell pink"
 
 let s=document.createElement("select")
 
@@ -317,7 +264,7 @@ for(let i=0;i<17;i++){
 let c=document.createElement("div")
 c.className="cell"
 
-if(i>0 && i<15){
+if(i>0 && i<16){
 
 let s=document.createElement("select")
 
@@ -339,48 +286,14 @@ div.appendChild(c)
 
 }
 
-function createSymbols(id){
-
-let div=document.getElementById(id)
-
-for(let i=0;i<16;i++){
-
-let c=document.createElement("div")
-c.className="cell symbol"
-
-c.onclick=()=>{
-
-let op=prompt("1 ⬜\n2 ⭕\n3 🔁\n4 🔶\n5 🔘\n0 borrar")
-
-let map={
-1:"⬜",
-2:"⭕",
-3:"🔁",
-4:"🔶",
-5:"🔘"
-}
-
-c.innerText=map[op]||""
-
-}
-
-div.appendChild(c)
-
-}
-
-}
-
 fillNumbers("numsTop",numsTop)
 fillNumbers("numsBottom",numsBottom)
 
 createIPRReal("iprRealTop")
 createIPRReal("iprRealBottom")
 
-createSymbols("simTop")
-createSymbols("simBottom")
-
-createIPR("iprTop")
-createIPR("iprBottom")
+createPinkRow("pinkTop")
+createPinkRow("pinkBottom")
 
 createWhiteRow("whiteTop")
 createWhiteRow("whiteBottom")
@@ -397,7 +310,7 @@ const opt={
 margin:0,
 filename:nombre,
 image:{type:"jpeg",quality:1},
-html2canvas:{scale:3,useCORS:true,scrollY:0},
+html2canvas:{scale:3,useCORS:true},
 jsPDF:{unit:"pt",format:"letter",orientation:"portrait"}
 }
 
@@ -409,12 +322,8 @@ function limpiar(){
 
 document.getElementById("paciente").value=""
 document.getElementById("doctor").value=""
-document.getElementById("alineador").value=""
-document.getElementById("sup").value=""
-document.getElementById("inf").value=""
 
 document.querySelectorAll("select").forEach(s=>s.value="")
-document.querySelectorAll(".symbol").forEach(s=>s.innerText="")
 
 }
 
