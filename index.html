@@ -34,31 +34,30 @@ margin-bottom:10px;
 width:200px;
 }
 
-.header-title{
+.header{
 background:#b87492;
 color:white;
 padding:8px;
 text-align:center;
 font-weight:bold;
-margin-bottom:10px;
+margin-bottom:15px;
 }
 
-.info-table{
+table{
 width:100%;
 border-collapse:collapse;
 margin-bottom:20px;
 }
 
-.info-table td{
+td{
 border:1px dashed #b87492;
 padding:8px;
 }
 
-.info-table input{
+input{
 width:100%;
 border:none;
 outline:none;
-font-size:14px;
 }
 
 .grid{
@@ -68,38 +67,40 @@ grid-template-columns:repeat(16,1fr);
 
 .cell{
 border:1px solid #999;
-height:32px;
+height:34px;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:12px;
+font-size:18px;
+cursor:pointer;
 }
 
-.ipr{
-background:#b87492;
-}
-
-.ipr select{
-width:100%;
-height:100%;
-border:none;
+.pink{
 background:#b87492;
 color:white;
-text-align:center;
-}
-
-.symbol{
-cursor:pointer;
-font-size:18px;
 }
 
 .teeth{
 text-align:center;
-margin:6px 0;
+margin:10px 0;
 }
 
 .teeth img{
 width:720px;
+}
+
+.offsetRow{
+display:grid;
+grid-template-columns:repeat(15,1fr);
+margin-top:5px;
+}
+
+.offsetCell{
+height:20px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:14px;
 }
 
 .instructions{
@@ -108,21 +109,14 @@ font-size:14px;
 }
 
 .instructions input{
-border:none;
 border-bottom:1px solid #aaa;
 width:90px;
-}
-
-.symbology{
-margin-top:15px;
-font-size:13px;
 }
 
 button{
 display:block;
 margin:25px auto;
 padding:10px 25px;
-cursor:pointer;
 }
 
 </style>
@@ -137,64 +131,58 @@ cursor:pointer;
 <img src="https://github.com/jmorales-source/inveasyble-website-assets/blob/main/INVEASYBLE%20(1).png?raw=true">
 </div>
 
-<div class="header-title">
+<div class="header">
 INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 </div>
 
-<table class="info-table">
+<table>
 
 <tr>
-<td style="width:120px"><b>PACIENTE:</b></td>
-<td><input id="paciente"></td>
+<td width="120"><b>PACIENTE</b></td>
+<td><input></td>
 </tr>
 
 <tr>
-<td><b>DOCTOR:</b></td>
-<td><input id="doctor"></td>
+<td><b>DOCTOR</b></td>
+<td><input></td>
 </tr>
 
 </table>
 
 <h4>DIAGRAMA DE IPR, ATACHES Y ADITAMENTOS</h4>
 
-<div class="grid" id="numsTop"></div>
+<div class="grid" id="topRow"></div>
 
-<div class="grid" id="iprTop"></div>
-
-<div class="grid" id="simTop"></div>
+<div class="offsetRow" id="topOffset"></div>
 
 <div class="teeth">
 <img src="https://github.com/jmorales-source/index.html/blob/main/DENTOGRAMA.png?raw=true">
 </div>
 
-<div class="grid" id="simBottom"></div>
+<div class="grid" id="bottomRow"></div>
 
-<div class="teeth">
-<img src="https://github.com/jmorales-source/index.html/blob/main/DENTOGRAMA.png?raw=true">
-</div>
+<div class="offsetRow" id="bottomOffset"></div>
 
-<div class="grid" id="iprBottom"></div>
-
-<div class="grid" id="numsBottom"></div>
+<div class="grid pink" id="iprRow"></div>
 
 <div class="instructions">
 
-<b>INSTRUCCIONES:</b><br><br>
+<b>INSTRUCCIONES</b><br><br>
 
 IPR <span style="color:#33c6d4">CELESTE</span> antes del alineador #:
-<input id="alineador"><br><br>
+<input><br><br>
 
 Total alineadores superiores:
-<input id="sup"><br>
+<input><br>
 
 Total alineadores inferiores:
-<input id="inf">
+<input>
 
 </div>
 
-<div class="symbology">
+<br>
 
-<b>SIMBOLOGÍA:</b><br>
+<b>SIMBOLOGÍA</b><br>
 
 ⬜ Atache - (Se realiza en resina utilizando la plantilla)<br>
 ⭕ Botón para elástico - (Metálico, estético o en resina)<br>
@@ -204,114 +192,77 @@ Total alineadores inferiores:
 
 </div>
 
-</div>
-
 <button onclick="exportPDF()">Exportar PDF</button>
 
 <script>
 
-let numsTop=[
-"1.8","1.7","1.6","1.5","1.4","1.3","1.2","1.1",
-"2.1","2.2","2.3","2.4","2.5","2.6","2.7","2.8"
-]
+let topRow=document.getElementById("topRow")
+let bottomRow=document.getElementById("bottomRow")
+let iprRow=document.getElementById("iprRow")
+let topOffset=document.getElementById("topOffset")
+let bottomOffset=document.getElementById("bottomOffset")
 
-let numsBottom=[
-"4.8","4.7","4.6","4.5","4.4","4.3","4.2","4.1",
-"3.1","3.2","3.3","3.4","3.5","3.6","3.7","3.8"
-]
+let symbols=["⬜","⭕","🔁","🔶","🔘"]
 
-function fillNumbers(id,data){
+function chooseSymbol(cell){
 
-let div=document.getElementById(id)
+let op=prompt("1 ⬜\n2 ⭕\n3 🔁\n4 🔶\n5 🔘")
 
-data.forEach(n=>{
+cell.innerText=symbols[op-1]||""
+
+}
+
+for(let i=0;i<16;i++){
 
 let c=document.createElement("div")
 c.className="cell"
-c.innerText=n
+c.onclick=()=>chooseSymbol(c)
 
-div.appendChild(c)
-
-})
+topRow.appendChild(c)
 
 }
-
-function createIPR(id){
-
-let div=document.getElementById(id)
 
 for(let i=0;i<16;i++){
 
 let c=document.createElement("div")
-c.className="cell ipr"
+c.className="cell"
+c.onclick=()=>chooseSymbol(c)
 
-let s=document.createElement("select")
-
-let vals=["","0.1","0.2","0.3","0.4","0.5"]
-
-vals.forEach(v=>{
-
-let o=document.createElement("option")
-o.text=v
-s.add(o)
-
-})
-
-c.appendChild(s)
-
-div.appendChild(c)
+bottomRow.appendChild(c)
 
 }
-
-}
-
-function createSymbols(id){
-
-let div=document.getElementById(id)
 
 for(let i=0;i<16;i++){
 
 let c=document.createElement("div")
+c.className="cell pink"
 
-c.className="cell symbol"
-
-c.onclick=()=>{
-
-let op=prompt("1 ⬜\n2 ⭕\n3 🔁\n4 🔶\n5 🔘\n0 borrar")
-
-let map={
-1:"⬜",
-2:"⭕",
-3:"🔁",
-4:"🔶",
-5:"🔘"
-}
-
-c.innerText=map[op]||""
+iprRow.appendChild(c)
 
 }
 
-div.appendChild(c)
+for(let i=0;i<15;i++){
+
+let c=document.createElement("div")
+c.className="offsetCell"
+topOffset.appendChild(c)
 
 }
 
+for(let i=0;i<15;i++){
+
+let c=document.createElement("div")
+c.className="offsetCell"
+bottomOffset.appendChild(c)
+
 }
-
-fillNumbers("numsTop",numsTop)
-fillNumbers("numsBottom",numsBottom)
-
-createIPR("iprTop")
-createIPR("iprBottom")
-
-createSymbols("simTop")
-createSymbols("simBottom")
 
 function exportPDF(){
 
 html2pdf().set({
 
 margin:0,
-filename:"inveasyble_plan.pdf",
+filename:"plan_inveasyble.pdf",
 html2canvas:{scale:4},
 jsPDF:{unit:"pt",format:"letter"}
 
