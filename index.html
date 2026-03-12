@@ -1,220 +1,173 @@
-```html
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="UTF-8">
 <title>INVEASYBLE PLAN</title>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
 <style>
-
 body{
-font-family:Arial;
-background:#ececec;
+    font-family:Arial;
+    background:#ececec;
 }
-
 #page{
-width:816px;
-height:auto;
-background:white;
-margin:auto;
-padding:25px;
-box-sizing:border-box;
+    width:816px;
+    height:auto;
+    background:white;
+    margin:auto;
+    padding:25px;
+    box-sizing:border-box;
 }
-
 .logo{
-text-align:center;
-margin-bottom:10px;
+    text-align:center;
+    margin-bottom:10px;
 }
-
 .logo img{
-width:200px;
+    width:200px;
 }
-
 .header-title{
-background:#b87492;
-color:white;
-padding:8px;
-text-align:center;
-font-weight:bold;
-margin-bottom:10px;
+    background:#b87492;
+    color:white;
+    padding:8px;
+    text-align:center;
+    font-weight:bold;
+    margin-bottom:10px;
 }
-
 .info-table{
-width:100%;
-border-collapse:collapse;
-margin-bottom:20px;
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:20px;
 }
-
 .info-table td{
-border:1px dashed #b87492;
-padding:8px;
+    border:1px dashed #b87492;
+    padding:8px;
 }
-
 .info-table input{
-width:100%;
-border:none;
-outline:none;
-font-size:14px;
+    width:100%;
+    border:none;
+    outline:none;
+    font-size:14px;
 }
-
 .grid{
-display:grid;
-grid-template-columns:repeat(16,1fr);
+    display:grid;
+    grid-template-columns:repeat(16,1fr);
 }
-
 .cell{
-border:1px solid #999;
-height:30px;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:13px;
+    border:1px solid #999;
+    height:30px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
 }
-
 .whitecell{
-background:white;
-cursor:pointer;
+    background:white;
+    cursor:pointer;
 }
-
 .ipr{
-background:#b87492;
+    background:#b87492;
 }
-
 .ipr select{
     width:100%;
     height:100%;
-    border:none;       
-    outline:none;      
+    border:none;
     background:#b87492;
     color:white;
     text-align:center;
     font-size:16px;
-    appearance:none;  
-    -webkit-appearance:none;
-    -moz-appearance:none;
 }
-
 .teeth{
-text-align:center;
-margin:4px 0;
+    text-align:center;
+    margin:10px 0;
 }
-
 .teeth img{
-width:100%;
-transform:scaleX(1.03);
+    max-width:100%;
+    height:auto;
 }
-
 .instructions{
-margin-top:15px;
-font-size:14px;
+    margin-top:15px;
+    font-size:14px;
 }
-
 .instructions input{
-border:none;
-border-bottom:1px solid #aaa;
-width:90px;
+    border:none;
+    border-bottom:1px solid #aaa;
+    width:90px;
 }
-
 .symbology{
-margin-top:10px;
-font-size:13px;
+    margin-top:10px;
+    font-size:13px;
 }
-
 button{
-margin:25px 10px;
-padding:10px 25px;
-cursor:pointer;
+    margin:25px 10px;
+    padding:10px 25px;
+    cursor:pointer;
 }
-
 .buttons{
-text-align:center;
+    text-align:center;
 }
-
+.ipr-shift{
+    display:grid;
+    grid-template-columns:repeat(17,1fr);
+}
 </style>
-
 </head>
-
 <body>
-
 <div id="page">
+    <div class="logo">
+        <img src="https://raw.githubusercontent.com/jmorales-source/inveasyble-website-assets/main/INVEASYBLE%20(1).png">
+    </div>
+    <div class="header-title">
+        INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
+    </div>
+    <table class="info-table">
+        <tr>
+            <td style="width:120px"><b>PACIENTE:</b></td>
+            <td><input id="paciente"></td>
+        </tr>
+        <tr>
+            <td><b>DOCTOR:</b></td>
+            <td><input id="doctor"></td>
+        </tr>
+    </table>
 
-<div class="logo">
-<img src="https://raw.githubusercontent.com/jmorales-source/inveasyble-website-assets/main/INVEASYBLE%20(1).png">
-</div>
+    <h4>DIAGRAMA DE IPR, ATACHES Y ADITAMENTOS</h4>
 
-<div class="header-title">
-INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
-</div>
+    <div class="ipr-shift" id="iprRealTop"></div>
+    <div class="grid" id="numsTop"></div>
+    <div class="grid" id="iprTop"></div>
+    <div class="grid" id="whiteTop"></div>
 
-<table class="info-table">
+    <div class="teeth">
+        <img src="https://github.com/jmorales-source/index.html/blob/main/odontograma.png?raw=true">
+    </div>
 
-<tr>
-<td style="width:120px"><b>PACIENTE:</b></td>
-<td><input id="paciente"></td>
-</tr>
+    <div class="grid" id="whiteBottom"></div>
+    <div class="grid" id="iprBottom"></div>
+    <div class="grid" id="numsBottom"></div>
+    <div class="ipr-shift" id="iprRealBottom"></div>
 
-<tr>
-<td><b>DOCTOR:</b></td>
-<td><input id="doctor"></td>
-</tr>
+    <div class="instructions">
+        <b>INSTRUCCIONES:</b><br><br>
+        IPR <span style="color:#33c6d4">CELESTE</span> antes del alineador #: <input id="alineador"><br><br>
+        Total alineadores superiores: <input id="sup"><br>
+        Total alineadores inferiores: <input id="inf">
+    </div>
 
-</table>
-
-<h4>DIAGRAMA DE IPR, ATACHES Y ADITAMENTOS</h4>
-
-<div class="ipr-shift" id="iprRealTop"></div>
-<div class="grid" id="numsTop"></div>
-<div class="grid" id="iprTop"></div>
-<div class="grid" id="whiteTop"></div>
-
-<div class="teeth">
-<img src="https://github.com/jmorales-source/index.html/blob/main/odontograma.png?raw=true" style="max-width:100%; height:auto;">
-</div>
-  
-<div class="grid" id="whiteBottom"></div>
-<div class="grid" id="iprBottom"></div>
-<div class="grid" id="numsBottom"></div>
-<div class="ipr-shift" id="iprRealBottom"></div>
-
-<div class="instructions">
-
-<b>INSTRUCCIONES:</b><br><br>
-
-IPR <span style="color:#33c6d4">CELESTE</span> antes del alineador #:
-<input id="alineador"><br><br>
-
-Total alineadores superiores:
-<input id="sup"><br>
-
-Total alineadores inferiores:
-<input id="inf">
-
-</div>
-
-<div class="symbology">
-
-<b>SIMBOLOGÍA:</b><br>
-
-⬜ Atache<br>
-⭕ Botón para elástico<br>
-🔁 Gancho plástico<br>
-🔶 Plano de mordida<br>
-🔘 Punto de presión
-
-</div>
-
+    <div class="symbology">
+        <b>SIMBOLOGÍA:</b><br>
+        ⬜ Atache<br>
+        ⭕ Botón para elástico<br>
+        🔁 Gancho plástico<br>
+        🔶 Plano de mordida<br>
+        🔘 Punto de presión
+    </div>
 </div>
 
 <div class="buttons">
-<button onclick="exportPDF()">Exportar PDF</button>
-<button onclick="limpiar()">Limpiar formulario</button>
+    <button onclick="exportPDF()">Exportar PDF</button>
+    <button onclick="limpiar()">Limpiar formulario</button>
 </div>
 
 <script>
-
 const WEBAPP_URL="https://script.google.com/macros/s/AKfycbwcYJHfJozSrhKxOUF2sSNCCsWXC3NJYCnX5wJ7SuimnCJ8NFhq8SwXIfg_bbcD-39-/exec"
 
 let numsTop=[
@@ -228,63 +181,63 @@ let numsBottom=[
 ]
 
 function fillNumbers(id,data){
-let div=document.getElementById(id)
-data.forEach(n=>{
-let c=document.createElement("div")
-c.className="cell"
-c.innerText=n
-div.appendChild(c)
-})
+    let div=document.getElementById(id)
+    data.forEach(n=>{
+        let c=document.createElement("div")
+        c.className="cell"
+        c.innerText=n
+        div.appendChild(c)
+    })
 }
 
 function createWhiteRow(id){
-let div=document.getElementById(id)
-for(let i=0;i<16;i++){
-let c=document.createElement("div")
-c.className="cell whitecell"
-c.onclick=()=>{
-let op=prompt("1 Atache ⬜\n2 Botón para elástico ⭕\n3 Gancho plástico 🔁\n4 Plano de mordida 🔶\n5 Punto de presión 🔘\n0 borrar")
-let map={1:"⬜",2:"⭕",3:"🔁",4:"🔶",5:"🔘"}
-c.innerText=map[op]||""
-}
-div.appendChild(c)
-}
+    let div=document.getElementById(id)
+    for(let i=0;i<16;i++){
+        let c=document.createElement("div")
+        c.className="cell whitecell"
+        c.onclick=()=>{
+            let op=prompt("1 Atache ⬜\n2 Botón para elástico ⭕\n3 Gancho plástico 🔁\n4 Plano de mordida 🔶\n5 Punto de presión 🔘\n0 borrar")
+            let map={1:"⬜",2:"⭕",3:"🔁",4:"🔶",5:"🔘"}
+            c.innerText=map[op]||""
+        }
+        div.appendChild(c)
+    }
 }
 
 function createIPR(id){
-let div=document.getElementById(id)
-for(let i=0;i<16;i++){
-let c=document.createElement("div")
-c.className="cell ipr"
-let s=document.createElement("select")
-let vals=["","⬜"]
-vals.forEach(v=>{
-let o=document.createElement("option")
-o.text=v
-s.add(o)
-})
-c.appendChild(s)
-div.appendChild(c)
-}
+    let div=document.getElementById(id)
+    for(let i=0;i<16;i++){
+        let c=document.createElement("div")
+        c.className="cell ipr"
+        let s=document.createElement("select")
+        let vals=["","⬜"]
+        vals.forEach(v=>{
+            let o=document.createElement("option")
+            o.text=v
+            s.add(o)
+        })
+        c.appendChild(s)
+        div.appendChild(c)
+    }
 }
 
 function createIPRReal(id){
-let div=document.getElementById(id)
-for(let i=0;i<17;i++){
-let c=document.createElement("div")
-c.className="cell"
-if(i>0 && i<16){
-let s=document.createElement("select")
-let vals=["","0.1","0.2","0.3","0.4","0.5"]
-vals.forEach(v=>{
-let o=document.createElement("option")
-o.text=v
-s.add(o)
-})
-c.appendChild(s)
-}
-div.appendChild(c)
-}
+    let div=document.getElementById(id)
+    for(let i=0;i<17;i++){
+        let c=document.createElement("div")
+        c.className="cell"
+        if(i>0 && i<16){
+            let s=document.createElement("select")
+            let vals=["","0.1","0.2","0.3","0.4","0.5"]
+            vals.forEach(v=>{
+                let o=document.createElement("option")
+                o.text=v
+                s.add(o)
+            })
+            c.appendChild(s)
+        }
+        div.appendChild(c)
+    }
 }
 
 fillNumbers("numsTop",numsTop)
@@ -297,55 +250,39 @@ createWhiteRow("whiteTop")
 createWhiteRow("whiteBottom")
 
 function exportPDF(){
-
-let paciente=document.getElementById("paciente").value || "PACIENTE"
-
-let nombre="INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO : "+paciente+".pdf"
-
-const element=document.getElementById("page")
-
-const opt={
-margin:0,
-filename:nombre,
-image:{type:"jpeg",quality:1},
-html2canvas:{scale:3,useCORS:true,scrollY:0},
-jsPDF:{unit:"pt",format:"letter",orientation:"portrait"}
-}
-
-html2pdf().set(opt).from(element).outputPdf("datauristring").then(function(pdf){
-
-let base64=pdf.split(",")[1]
-
-fetch(WEBAPP_URL,{
-method:"POST",
-body:JSON.stringify({
-patient:paciente,
-name:nombre,
-file:base64
-})
-})
-
-alert("PDF guardado en Drive")
-
-})
-
+    let paciente=document.getElementById("paciente").value || "PACIENTE"
+    let nombre="INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO : "+paciente+".pdf"
+    const element=document.getElementById("page")
+    const opt={
+        margin:0,
+        filename:nombre,
+        image:{type:"jpeg",quality:1},
+        html2canvas:{scale:3,useCORS:true,scrollY:0},
+        jsPDF:{unit:"pt",format:"letter",orientation:"portrait"}
+    }
+    html2pdf().set(opt).from(element).outputPdf("datauristring").then(function(pdf){
+        let base64=pdf.split(",")[1]
+        fetch(WEBAPP_URL,{
+            method:"POST",
+            body:JSON.stringify({
+                patient:paciente,
+                name:nombre,
+                file:base64
+            })
+        })
+        alert("PDF guardado en Drive")
+    })
 }
 
 function limpiar(){
-
-document.getElementById("paciente").value=""
-document.getElementById("doctor").value=""
-document.getElementById("alineador").value=""
-document.getElementById("sup").value=""
-document.getElementById("inf").value=""
-
-document.querySelectorAll("select").forEach(s=>s.value="")
-document.querySelectorAll(".whitecell").forEach(s=>s.innerText="")
-
+    document.getElementById("paciente").value=""
+    document.getElementById("doctor").value=""
+    document.getElementById("alineador").value=""
+    document.getElementById("sup").value=""
+    document.getElementById("inf").value=""
+    document.querySelectorAll("select").forEach(s=>s.value="")
+    document.querySelectorAll(".whitecell").forEach(s=>s.innerText="")
 }
-
 </script>
-
 </body>
 </html>
-```
