@@ -19,16 +19,11 @@ background:white;
 margin:auto;
 padding:25px;
 box-sizing:border-box;
+position:relative;
 }
 
-.logo{
-text-align:center;
-margin-bottom:10px;
-}
-
-.logo img{
-width:200px;
-}
+.logo{text-align:center;margin-bottom:10px;}
+.logo img{width:200px;}
 
 .header-title{
 background:#b87492;
@@ -69,6 +64,7 @@ display:flex;
 align-items:center;
 justify-content:center;
 font-size:13px;
+position:relative;
 }
 
 .whitecell{
@@ -90,33 +86,17 @@ text-align:center;
 font-size:16px;
 }
 
-.iprbox{
-display:flex;
-flex-direction:column;
-width:100%;
+.iprReal{
+cursor:pointer;
 }
 
-.iprbox select,
-.iprbox input{
-width:100%;
-border:none;
-font-size:11px;
-text-align:center;
-}
-
-.teeth{
-text-align:center;
-margin:10px 0;
-}
-
-.teeth img{
-max-width:100%;
-height:auto;
-}
+.teeth{text-align:center;margin:10px 0;}
+.teeth img{max-width:100%;height:auto;}
 
 .instructions{
 margin-top:15px;
 font-size:14px;
+width:520px;
 }
 
 .instructions input{
@@ -131,15 +111,19 @@ font-size:13px;
 }
 
 .notes{
-margin-top:15px;
+position:absolute;
+right:25px;
+top:520px;
+width:230px;
 }
 
 .notes textarea{
 width:100%;
-height:80px;
+height:120px;
 border:1px solid #aaa;
 resize:none;
 padding:5px;
+font-size:12px;
 }
 
 button{
@@ -148,9 +132,7 @@ padding:10px 25px;
 cursor:pointer;
 }
 
-.buttons{
-text-align:center;
-}
+.buttons{text-align:center;}
 
 .ipr-shift{
 display:grid;
@@ -208,15 +190,14 @@ INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 
 <div class="ipr-shift" id="iprRealBottom"></div>
 
-
 <div class="instructions">
 
 <b>INSTRUCCIONES:</b>
 
 <br><br>
 
-<span id="iprInstruction" style="font-weight:bold;"></span>
-antes del alineador # 
+<span id="iprText"></span>
+
 <input id="alineador">
 
 <br><br>
@@ -235,16 +216,11 @@ Total alineadores inferiores:
 
 <b>SIMBOLOGÍA:</b>
 
-<br>
-⬜ Atache
-<br>
-⭕ Botón para elástico
-<br>
-🔁 Gancho plástico
-<br>
-🔶 Plano de mordida
-<br>
-🔘 Punto de presión
+<br>⬜ Atache
+<br>⭕ Botón para elástico
+<br>🔁 Gancho plástico
+<br>🔶 Plano de mordida
+<br>🔘 Punto de presión
 
 </div>
 
@@ -255,12 +231,10 @@ Total alineadores inferiores:
 
 </div>
 
-
 <div class="buttons">
 <button onclick="exportPDF()">Exportar PDF</button>
 <button onclick="limpiar()">Limpiar formulario</button>
 </div>
-
 
 <script>
 
@@ -281,13 +255,10 @@ function fillNumbers(id,data){
 let div=document.getElementById(id)
 
 data.forEach(n=>{
-
 let c=document.createElement("div")
 c.className="cell"
 c.innerText=n
-
 div.appendChild(c)
-
 })
 
 }
@@ -350,44 +321,27 @@ let div=document.getElementById(id)
 for(let i=0;i<17;i++){
 
 let c=document.createElement("div")
-c.className="cell"
+c.className="cell iprReal"
 
 if(i>0 && i<16){
 
-let box=document.createElement("div")
-box.className="iprbox"
+c.onclick=()=>{
 
-let val=document.createElement("select")
-let color=document.createElement("select")
-let custom=document.createElement("input")
+let valor=prompt("Valor IPR (ej 0.3)")
+if(!valor) return
 
-let vals=["","0.1","0.2","0.3","0.4","0.5"]
+let color=prompt("Color: Celeste / Amarillo / Naranja")
+if(!color) return
 
-vals.forEach(v=>{
-let o=document.createElement("option")
-o.text=v
-val.add(o)
-})
+c.innerText=valor
 
-let colors=["","Celeste","Amarillo","Naranja"]
+if(color.toLowerCase()=="celeste") c.style.background="#33c6d4"
+if(color.toLowerCase()=="amarillo") c.style.background="#ffd966"
+if(color.toLowerCase()=="naranja") c.style.background="#f6b26b"
 
-colors.forEach(v=>{
-let o=document.createElement("option")
-o.text=v
-color.add(o)
-})
+actualizarTexto(color)
 
-custom.placeholder="otro"
-
-val.onchange=updateInstruction
-color.onchange=updateInstruction
-custom.onchange=updateInstruction
-
-box.appendChild(val)
-box.appendChild(color)
-box.appendChild(custom)
-
-c.appendChild(box)
+}
 
 }
 
@@ -397,27 +351,10 @@ div.appendChild(c)
 
 }
 
-function updateInstruction(){
+function actualizarTexto(color){
 
-let colors=new Set()
-
-document.querySelectorAll(".iprbox").forEach(b=>{
-
-let c=b.children[1].value
-
-if(c) colors.add(c)
-
-})
-
-let text=""
-
-if(colors.size>0){
-
-text="IPR "+Array.from(colors).join(" ")
-
-}
-
-document.getElementById("iprInstruction").innerText=text
+document.getElementById("iprText").innerText=
+"IPR "+color+" antes del alineador # "
 
 }
 
@@ -477,11 +414,15 @@ document.getElementById("sup").value=""
 document.getElementById("inf").value=""
 document.getElementById("notas").value=""
 
+document.querySelectorAll(".iprReal").forEach(c=>{
+c.innerText=""
+c.style.background=""
+})
+
 document.querySelectorAll("select").forEach(s=>s.value="")
 document.querySelectorAll(".whitecell").forEach(s=>s.innerText="")
-document.querySelectorAll(".iprbox input").forEach(i=>i.value="")
 
-document.getElementById("iprInstruction").innerText=""
+document.getElementById("iprText").innerText=""
 
 }
 
