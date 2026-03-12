@@ -90,6 +90,20 @@ text-align:center;
 font-size:16px;
 }
 
+.iprbox{
+display:flex;
+flex-direction:column;
+width:100%;
+}
+
+.iprbox select,
+.iprbox input{
+width:100%;
+border:none;
+font-size:11px;
+text-align:center;
+}
+
 .teeth{
 text-align:center;
 margin:10px 0;
@@ -117,15 +131,12 @@ font-size:13px;
 }
 
 .notes{
-position:absolute;
-right:30px;
-bottom:120px;
-width:250px;
+margin-top:15px;
 }
 
 .notes textarea{
 width:100%;
-height:90px;
+height:80px;
 border:1px solid #aaa;
 resize:none;
 padding:5px;
@@ -144,13 +155,6 @@ text-align:center;
 .ipr-shift{
 display:grid;
 grid-template-columns:repeat(17,1fr);
-}
-
-.ipr-input{
-width:100%;
-border:none;
-text-align:center;
-font-size:12px;
 }
 
 </style>
@@ -211,17 +215,18 @@ INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 
 <br><br>
 
-IPR <span id="iprColor"></span> antes del alineador # 
+<span id="iprInstruction" style="font-weight:bold;"></span>
+antes del alineador # 
 <input id="alineador">
 
 <br><br>
 
-Total alineadores superiores: 
+Total alineadores superiores:
 <input id="sup">
 
 <br>
 
-Total alineadores inferiores: 
+Total alineadores inferiores:
 <input id="inf">
 
 </div>
@@ -231,43 +236,29 @@ Total alineadores inferiores:
 <b>SIMBOLOGÍA:</b>
 
 <br>
-
 ⬜ Atache
-
 <br>
-
 ⭕ Botón para elástico
-
 <br>
-
 🔁 Gancho plástico
-
 <br>
-
 🔶 Plano de mordida
-
 <br>
-
 🔘 Punto de presión
 
 </div>
 
 <div class="notes">
-
 <b>NOTAS</b>
-
 <textarea id="notas"></textarea>
-
 </div>
 
 </div>
+
 
 <div class="buttons">
-
 <button onclick="exportPDF()">Exportar PDF</button>
-
 <button onclick="limpiar()">Limpiar formulario</button>
-
 </div>
 
 
@@ -285,7 +276,6 @@ let numsBottom=[
 "3.1","3.2","3.3","3.4","3.5","3.6","3.7","3.8"
 ]
 
-
 function fillNumbers(id,data){
 
 let div=document.getElementById(id)
@@ -293,9 +283,7 @@ let div=document.getElementById(id)
 data.forEach(n=>{
 
 let c=document.createElement("div")
-
 c.className="cell"
-
 c.innerText=n
 
 div.appendChild(c)
@@ -304,7 +292,6 @@ div.appendChild(c)
 
 }
 
-
 function createWhiteRow(id){
 
 let div=document.getElementById(id)
@@ -312,7 +299,6 @@ let div=document.getElementById(id)
 for(let i=0;i<16;i++){
 
 let c=document.createElement("div")
-
 c.className="cell whitecell"
 
 c.onclick=()=>{
@@ -331,8 +317,6 @@ div.appendChild(c)
 
 }
 
-
-
 function createIPR(id){
 
 let div=document.getElementById(id)
@@ -340,7 +324,6 @@ let div=document.getElementById(id)
 for(let i=0;i<16;i++){
 
 let c=document.createElement("div")
-
 c.className="cell ipr"
 
 let s=document.createElement("select")
@@ -348,24 +331,17 @@ let s=document.createElement("select")
 let vals=["","⬜"]
 
 vals.forEach(v=>{
-
 let o=document.createElement("option")
-
 o.text=v
-
 s.add(o)
-
 })
 
 c.appendChild(s)
-
 div.appendChild(c)
 
 }
 
 }
-
-
 
 function createIPRReal(id){
 
@@ -374,20 +350,44 @@ let div=document.getElementById(id)
 for(let i=0;i<17;i++){
 
 let c=document.createElement("div")
-
 c.className="cell"
 
 if(i>0 && i<16){
 
-let input=document.createElement("input")
+let box=document.createElement("div")
+box.className="iprbox"
 
-input.className="ipr-input"
+let val=document.createElement("select")
+let color=document.createElement("select")
+let custom=document.createElement("input")
 
-input.placeholder="0.1 Celeste"
+let vals=["","0.1","0.2","0.3","0.4","0.5"]
 
-input.onchange=actualizarColorIPR
+vals.forEach(v=>{
+let o=document.createElement("option")
+o.text=v
+val.add(o)
+})
 
-c.appendChild(input)
+let colors=["","Celeste","Amarillo","Naranja"]
+
+colors.forEach(v=>{
+let o=document.createElement("option")
+o.text=v
+color.add(o)
+})
+
+custom.placeholder="otro"
+
+val.onchange=updateInstruction
+color.onchange=updateInstruction
+custom.onchange=updateInstruction
+
+box.appendChild(val)
+box.appendChild(color)
+box.appendChild(custom)
+
+c.appendChild(box)
 
 }
 
@@ -397,53 +397,41 @@ div.appendChild(c)
 
 }
 
+function updateInstruction(){
 
+let colors=new Set()
 
-function actualizarColorIPR(){
+document.querySelectorAll(".iprbox").forEach(b=>{
 
-let amarillo=false
-let celeste=false
-let naranja=false
+let c=b.children[1].value
 
-document.querySelectorAll(".ipr-input").forEach(i=>{
-
-let v=i.value.toLowerCase()
-
-if(v.includes("amarillo")) amarillo=true
-if(v.includes("celeste")) celeste=true
-if(v.includes("naranja")) naranja=true
+if(c) colors.add(c)
 
 })
 
-let txt=""
+let text=""
 
-if(amarillo) txt+="Amarillo "
-if(celeste) txt+="Celeste "
-if(naranja) txt+="Naranja "
+if(colors.size>0){
 
-document.getElementById("iprColor").innerText=txt
+text="IPR "+Array.from(colors).join(" ")
 
 }
 
+document.getElementById("iprInstruction").innerText=text
 
+}
 
 fillNumbers("numsTop",numsTop)
-
 fillNumbers("numsBottom",numsBottom)
 
 createIPRReal("iprRealTop")
-
 createIPRReal("iprRealBottom")
 
 createIPR("iprTop")
-
 createIPR("iprBottom")
 
 createWhiteRow("whiteTop")
-
 createWhiteRow("whiteBottom")
-
-
 
 function exportPDF(){
 
@@ -454,17 +442,11 @@ let nombre="INVEASYBLE PLAN "+paciente+".pdf"
 const element=document.getElementById("page")
 
 const opt={
-
 margin:0,
-
 filename:nombre,
-
 image:{type:"jpeg",quality:1},
-
 html2canvas:{scale:3,useCORS:true,scrollY:0},
-
 jsPDF:{unit:"pt",format:"letter",orientation:"portrait"}
-
 }
 
 html2pdf().set(opt).from(element).outputPdf("datauristring").then(function(pdf){
@@ -472,19 +454,12 @@ html2pdf().set(opt).from(element).outputPdf("datauristring").then(function(pdf){
 let base64=pdf.split(",")[1]
 
 fetch(WEBAPP_URL,{
-
 method:"POST",
-
 body:JSON.stringify({
-
 patient:paciente,
-
 name:nombre,
-
 file:base64
-
 })
-
 })
 
 alert("PDF guardado en Drive")
@@ -492,8 +467,6 @@ alert("PDF guardado en Drive")
 })
 
 }
-
-
 
 function limpiar(){
 
@@ -505,12 +478,10 @@ document.getElementById("inf").value=""
 document.getElementById("notas").value=""
 
 document.querySelectorAll("select").forEach(s=>s.value="")
-
 document.querySelectorAll(".whitecell").forEach(s=>s.innerText="")
+document.querySelectorAll(".iprbox input").forEach(i=>i.value="")
 
-document.querySelectorAll(".ipr-input").forEach(s=>s.value="")
-
-document.getElementById("iprColor").innerText=""
+document.getElementById("iprInstruction").innerText=""
 
 }
 
