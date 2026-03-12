@@ -64,12 +64,11 @@ display:flex;
 align-items:center;
 justify-content:center;
 font-size:13px;
-position:relative;
+cursor:pointer;
 }
 
 .whitecell{
 background:white;
-cursor:pointer;
 }
 
 .ipr{
@@ -84,10 +83,6 @@ background:#b87492;
 color:white;
 text-align:center;
 font-size:16px;
-}
-
-.iprReal{
-cursor:pointer;
 }
 
 .teeth{text-align:center;margin:10px 0;}
@@ -113,7 +108,7 @@ font-size:13px;
 .notes{
 position:absolute;
 right:25px;
-top:520px;
+top:650px;
 width:230px;
 }
 
@@ -173,9 +168,7 @@ INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 <div class="ipr-shift" id="iprRealTop"></div>
 
 <div class="grid" id="numsTop"></div>
-
 <div class="grid" id="iprTop"></div>
-
 <div class="grid" id="whiteTop"></div>
 
 <div class="teeth">
@@ -183,9 +176,7 @@ INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 </div>
 
 <div class="grid" id="whiteBottom"></div>
-
 <div class="grid" id="iprBottom"></div>
-
 <div class="grid" id="numsBottom"></div>
 
 <div class="ipr-shift" id="iprRealBottom"></div>
@@ -193,7 +184,6 @@ INVEASYBLE: INSTRUCCIONES DEL PLAN DE TRATAMIENTO
 <div class="instructions">
 
 <b>INSTRUCCIONES:</b>
-
 <br><br>
 
 <span id="iprText"></span>
@@ -263,57 +253,6 @@ div.appendChild(c)
 
 }
 
-function createWhiteRow(id){
-
-let div=document.getElementById(id)
-
-for(let i=0;i<16;i++){
-
-let c=document.createElement("div")
-c.className="cell whitecell"
-
-c.onclick=()=>{
-
-let op=prompt("1 Atache ⬜\n2 Botón ⭕\n3 Gancho 🔁\n4 Plano 🔶\n5 Presión 🔘\n0 borrar")
-
-let map={1:"⬜",2:"⭕",3:"🔁",4:"🔶",5:"🔘"}
-
-c.innerText=map[op]||""
-
-}
-
-div.appendChild(c)
-
-}
-
-}
-
-function createIPR(id){
-
-let div=document.getElementById(id)
-
-for(let i=0;i<16;i++){
-
-let c=document.createElement("div")
-c.className="cell ipr"
-
-let s=document.createElement("select")
-
-let vals=["","⬜"]
-
-vals.forEach(v=>{
-let o=document.createElement("option")
-o.text=v
-s.add(o)
-})
-
-c.appendChild(s)
-div.appendChild(c)
-
-}
-
-}
-
 function createIPRReal(id){
 
 let div=document.getElementById(id)
@@ -321,25 +260,37 @@ let div=document.getElementById(id)
 for(let i=0;i<17;i++){
 
 let c=document.createElement("div")
-c.className="cell iprReal"
+c.className="cell"
 
 if(i>0 && i<16){
 
 c.onclick=()=>{
 
 let valor=prompt("Valor IPR (ej 0.3)")
-if(!valor) return
 
-let color=prompt("Color: Celeste / Amarillo / Naranja")
-if(!color) return
+if(valor===null) return
+
+let color=prompt("Color:\n1 Celeste\n2 Amarillo\n3 Naranja\n0 Borrar")
+
+if(color=="0"){
+c.innerText=""
+c.style.background=""
+document.getElementById("iprText").innerText=""
+return
+}
+
+let nombre=""
+let bg=""
+
+if(color=="1"){nombre="Celeste";bg="#33c6d4"}
+if(color=="2"){nombre="Amarillo";bg="#ffd966"}
+if(color=="3"){nombre="Naranja";bg="#f6b26b"}
 
 c.innerText=valor
+c.style.background=bg
 
-if(color.toLowerCase()=="celeste") c.style.background="#33c6d4"
-if(color.toLowerCase()=="amarillo") c.style.background="#ffd966"
-if(color.toLowerCase()=="naranja") c.style.background="#f6b26b"
-
-actualizarTexto(color)
+document.getElementById("iprText").innerText=
+"IPR "+nombre+" antes del alineador # "
 
 }
 
@@ -348,13 +299,6 @@ actualizarTexto(color)
 div.appendChild(c)
 
 }
-
-}
-
-function actualizarTexto(color){
-
-document.getElementById("iprText").innerText=
-"IPR "+color+" antes del alineador # "
 
 }
 
@@ -363,12 +307,6 @@ fillNumbers("numsBottom",numsBottom)
 
 createIPRReal("iprRealTop")
 createIPRReal("iprRealBottom")
-
-createIPR("iprTop")
-createIPR("iprBottom")
-
-createWhiteRow("whiteTop")
-createWhiteRow("whiteBottom")
 
 function exportPDF(){
 
@@ -386,22 +324,7 @@ html2canvas:{scale:3,useCORS:true,scrollY:0},
 jsPDF:{unit:"pt",format:"letter",orientation:"portrait"}
 }
 
-html2pdf().set(opt).from(element).outputPdf("datauristring").then(function(pdf){
-
-let base64=pdf.split(",")[1]
-
-fetch(WEBAPP_URL,{
-method:"POST",
-body:JSON.stringify({
-patient:paciente,
-name:nombre,
-file:base64
-})
-})
-
-alert("PDF guardado en Drive")
-
-})
+html2pdf().set(opt).from(element).save()
 
 }
 
@@ -414,13 +337,10 @@ document.getElementById("sup").value=""
 document.getElementById("inf").value=""
 document.getElementById("notas").value=""
 
-document.querySelectorAll(".iprReal").forEach(c=>{
+document.querySelectorAll(".cell").forEach(c=>{
 c.innerText=""
 c.style.background=""
 })
-
-document.querySelectorAll("select").forEach(s=>s.value="")
-document.querySelectorAll(".whitecell").forEach(s=>s.innerText="")
 
 document.getElementById("iprText").innerText=""
 
